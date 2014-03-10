@@ -13,15 +13,21 @@ var mkdirp = require('mkdirp');
 
 console.log('Server start');
 
+var d = new Date();
+var time_now = d.getTime(); 
+
 var Product = mongoose.model('Product', {
     barcode: String,
     name: String,
-    category: String
+    category: String,
+    created: String,
+    modified: String
 });
 var Pictures = mongoose.model('Pictures', {
     product_id: String,
     by: String,
-    image_url: String
+    image_url: String,
+    created: String
 });
 var Comment = mongoose.model('Comment', {
     product_id: String,
@@ -109,7 +115,9 @@ function parseUrl(request_url) {
 function newProduct(response, postData) {
     var new_product = new Product({
         'barcode': postData.barcode,
-        'name': postData.name
+        'name': postData.name,
+        'modified': time_now,
+        'created': time_now
     });
     console.log(new_product);
 
@@ -142,7 +150,8 @@ function newComment(url, response, postData) {
         response.end();
     } else {
         // add product_id to postData
-        postData.product_id = url.product_id;
+        postData.product_id = url.product_id;,
+        postData.date = time_now;
 
         // create comment from postData
         var new_comment = new Comment(postData);
@@ -236,6 +245,7 @@ response.end();
         delete(postData.image);
 
         postData.product_id = url.product_id;
+        postData.created = time_now;
         postData.image_url = path + "/" + filename + ".jpg";
         console.log(postData);
         var new_image = new Pictures(postData);
@@ -257,26 +267,26 @@ response.end();
 }
 
 function productByBarcode(url, response) {
-            if (url.product_id) {
-                Product.find({ barcode: url.product_id }, function (err, products) {
-                    if (err || products[0] === undefined) {
-                        console.log("barcode not found\n");
-                        response.writeHead(404, "NOT FOUND", {
-                           'Content-Type': 'text/plain'
-                        });
-                        response.end();
-                    } else {
-                        var responseObject = {"products": products};
-                        response.end(JSON.stringify(responseObject));
-                    }
-                });
-            } else {
-                console.log("bad request, no bardcode provided\n");
-                response.writeHead(400, "Bad Request", {
-                    'Content-Type': 'text/plain'
+    if (url.product_id) {
+        Product.find({ barcode: url.product_id }, function (err, products) {
+            if (err || products[0] === undefined) {
+                console.log("barcode not found\n");
+                response.writeHead(404, "NOT FOUND", {
+                   'Content-Type': 'text/plain'
                 });
                 response.end();
+            } else {
+                var responseObject = {"products": products};
+                response.end(JSON.stringify(responseObject));
             }
+        });
+    } else {
+        console.log("bad request, no bardcode provided\n");
+        response.writeHead(400, "Bad Request", {
+            'Content-Type': 'text/plain'
+        });
+        response.end();
+    }
 }
 
 var server = http.createServer(function (request, response) {
