@@ -1,9 +1,9 @@
-// required modules: 
+// required modules:
 // npm install mongoose
 // npm install mkdirp
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://nodejitsu:5d9bd603b625abe8249cbac6e3625c9a@paulo.mongohq.com:10063/nodejitsudb5597013691');
+mongoose.connect('mongodb://localhost:27017/');
 
 var util = require('util');
 var querystring = require('querystring');
@@ -125,7 +125,9 @@ function newProduct(response, postData) {
             response.writeHead(201, "Created", {
                 'Content-Type': 'text/plain'
             });
-            response.write("" + new_product._id);
+
+            var product_data = {_id: new_product._id};
+            response.write(JSON.stringify(product_data));
             response.end();
         }
     });
@@ -202,14 +204,14 @@ function newImage(url, response, postData) {
 
         // check if product by id exists
         /*Product.findById(url.product_id, function (err, doc) {
-                        if (err) {
-                            response.writeHead(404, "Not Found", {
-                                'Content-Type': 'text/plain'
-                            });
-                            console.log("here"+url.product_id);
-                            response.end();
-                        }
-                    })*/
+if (err) {
+response.writeHead(404, "Not Found", {
+'Content-Type': 'text/plain'
+});
+console.log("here"+url.product_id);
+response.end();
+}
+})*/
 
         var regex = /^data:.+\/(.+);base64,(.*)$/;
         var path = "products/" + url.product_id;
@@ -256,15 +258,16 @@ function newImage(url, response, postData) {
 
 function productByBarcode(url, response) {
             if (url.product_id) {
-                Product.find({ barcode: url.product_id }, function (err, product) {
-                    if (err || product[0] === undefined) {
+                Product.find({ barcode: url.product_id }, function (err, products) {
+                    if (err || products[0] === undefined) {
                         console.log("barcode not found\n");
                         response.writeHead(404, "NOT FOUND", {
                            'Content-Type': 'text/plain'
                         });
                         response.end();
                     } else {
-                        response.end(JSON.stringify(product));
+                        var responseObject = {"products": products};
+                        response.end(JSON.stringify(responseObject));
                     }
                 });
             } else {
@@ -321,12 +324,12 @@ var server = http.createServer(function (request, response) {
                 
                 } else if (url.sub_command == "comments") {
                     if (url.sub_command_id) {
-                        Comment.find({ _id: url.sub_command_id }, 
+                        Comment.find({ _id: url.sub_command_id },
                             function (err, comment) {
                             response.end(JSON.stringify(comment));
                         });
                     } else {
-                        Comment.find(response, function (err, comment) {
+                        Comment.find({ product_id: url.product_id }, function (err, comment) {
                             response.end(JSON.stringify(comment));
                         });
                     }
@@ -336,7 +339,7 @@ var server = http.createServer(function (request, response) {
                     });
                 } else {
                     Product.find({ _id: url.product_id }, function (err, product) {
-                        response.end(JSON.stringify(product));
+                        response.end(JSON.stringify(product[0]));
                     });
                 }
             } else {
@@ -353,7 +356,7 @@ var server = http.createServer(function (request, response) {
 });
 
 // Listen on port 8002, IP defaults to 127.0.0.1
-server.listen(8000);
+server.listen(9999);
 
 // Put a friendly message on the terminal
-console.log("Server running at http://127.0.0.1:8000/");
+console.log("Server running at http://127.0.0.1:9999/");

@@ -1,62 +1,29 @@
+curl --data "barcode=43523&name=testproduct" http://localhost:9999/products
+curl --data "comment=testcomment&by=testuser" http://localhost:9999/products/531c26a94cb717727ee30950/comments
+curl --data "flag=GMO" http://localhost:9999/products/531c26a94cb717727ee30950/flags
 
-// returns product id 52f09d0a9ce335190ca2d74 with status code 201 Created or 400 Bad Request
-curl -v --data "barcode=43524&name=testproduct" http://localhost:8000/products
-
-
-// returns 
-// 201 Created 	Kommentti lisättiin tietokantaan
-// 400 Bad Request 	Kommenttia ei lisätty, koska pyyntö ei ole tämän protokollan mukainen
-// 404 Not Found 	Kommenttia ei lisätty, koska annettua tuotetta ei löydy tietokannasta
-
-curl -v --data "comment=testcomment&by=testuser" http://localhost:8000/products/52f0cc557b94747d0fde6a13/comments
+curl --data "by=joku&image=data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" http://localhost:9999/products/531c26a94cb717727ee30950/images
 
 
+curl http://localhost:9999/products
+
+curl http://localhost:9999/products/531c26a94cb717727ee30950
+
+curl http://localhost:9999/barcodes
+
+curl http://localhost:9999/barcodes/43523
 
 
-curl -v --data "by=joku&image=data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" http://localhost:8000/products/52f0cc557b94747d0fde6a13/images
+curl http://localhost:9999/products/531c26a94cb717727ee30950/comments
 
 
-curl --data "flag=GMO" http://localhost:8000/products/52f0cc557b94747d0fde6a13/flags
+curl http://localhost:9999/products/531c26a94cb717727ee30950/images
+
+curl http://localhost:9999/products/531c26a94cb717727ee30950/flags
 
 
+531d7a08ab41b19d0b123e8d
 
-curl -v http://localhost:8000/products/52f09d0a9ce335190ca2d74
-
-
-
-
-
-
-curl -v http://localhost:8000/barcodes/43523
-
-
-
-
-
-
-
-
-
-
-
-
-curl --data "comment=testcomment&by=testuser" http://localhost:8000/products/52de323a30a9947d11000001/comments
-
-curl --data "by=joku&image=data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" http://localhost:8000/products/52de4f43116aab8314000001/images
-
-
-curl -v http://localhost:8000/products
-
-curl http://localhost:8000/products/52de528fe0700fcc14000001
-
-curl http://localhost:8000/barcodes
-
-curl http://localhost:8000/barcodes/43523
-
-
-curl http://localhost:8000/products/52de323a30a9947d11000001/comments
-
-
-curl http://localhost:8000/products/52de4f43116aab8314000001/images
-
-curl http://localhost:8000/products/52de4f43116aab8314000001/flags
+curl --data "barcode=43524&name=testproduct2" http://localhost:9999/products
+curl --data "comment=testcomment&by=testuser" http://localhost:9999/products/531d7a08ab41b19d0b123e8d/comments
+curl http://localhost:9999/products/531d7a08ab41b19d0b123e8d/comments
