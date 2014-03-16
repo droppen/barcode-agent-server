@@ -229,40 +229,44 @@ response.end();
         mkdirp(path, function (err) {
             if (err) {
                 // do something!
-            }
-        });
-
-        console.log(new Date().getTime());
-        var matches = postData.image.match(regex);
-        var ext = matches[1];
-        var data = matches[2];
-        // filename is the number of millseconds since epoch
-        var filename = new Date().getTime();
-        var buffer = new Buffer(data, 'base64');
-        fs.writeFileSync(path + '/' + filename + '.jpg', buffer);
-
-        // delete base64data from postData, dont save to database
-        delete(postData.image);
-
-        postData.product_id = url.product_id;
-        postData.created = time_now;
-        postData.image_url = path + "/" + filename + ".jpg";
-        console.log(postData);
-        var new_image = new Pictures(postData);
-        new_image.save(function (err) {
-            if (err) {
-                console.log("image not saved to database\n");
-                response.writeHead(400, "Bad Request", {
-                    'Content-Type': 'text/plain'
-                });
             } else {
-                console.log("image saved\n");
-                response.writeHead(201, "OK", {
-                    'Content-Type': 'text/plain'
-                });
+                saveImage();
             }
-            response.end();
         });
+
+        function saveImage() {
+            console.log(new Date().getTime());
+            var matches = postData.image.match(regex);
+            var ext = matches[1];
+            var data = matches[2];
+            // filename is the number of millseconds since epoch
+            var filename = new Date().getTime();
+            var buffer = new Buffer(data, 'base64');
+            fs.writeFileSync(path + '/' + filename + '.jpg', buffer);
+
+            // delete base64data from postData, dont save to database
+            delete(postData.image);
+
+            postData.product_id = url.product_id;
+            postData.created = time_now;
+            postData.image_url = path + "/" + filename + ".jpg";
+            console.log(postData);
+            var new_image = new Pictures(postData);
+            new_image.save(function (err) {
+                if (err) {
+                    console.log("image not saved to database\n");
+                    response.writeHead(400, "Bad Request", {
+                    'Content-Type': 'text/plain'
+                    });
+                } else {
+                    console.log("image saved\n");
+                    response.writeHead(201, "OK", {
+                        'Content-Type': 'text/plain'
+                    });
+                }
+                response.end();
+            });
+        }
     }
 }
 
