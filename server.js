@@ -343,8 +343,9 @@ var server = http.createServer(function (request, response) {
                             response.end(JSON.stringify(comment));
                         });
                     } else {
-                        Comment.find({ product_id: url.product_id }, function (err, comment) {
-                            response.end(JSON.stringify(comment));
+                        Comment.find({ product_id: url.product_id }, function (err, comments) {
+                            var responseObject = {"comments": comments};
+                            response.end(JSON.stringify(responseObject));
                         });
                     }
                 } else if (url.sub_command == "flags") {
