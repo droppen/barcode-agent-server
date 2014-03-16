@@ -150,7 +150,7 @@ function newComment(url, response, postData) {
         response.end();
     } else {
         // add product_id to postData
-        postData.product_id = url.product_id;,
+        postData.product_id = url.product_id;
         postData.date = time_now;
 
         // create comment from postData
