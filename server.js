@@ -350,7 +350,8 @@ var server = http.createServer(function (request, response) {
                     }
                 } else if (url.sub_command == "flags") {
                     Flag.find({ product_id: url.product_id }, function (err, flags) {
-                        response.end(JSON.stringify(flags));
+                        var responseObject = {"flags": flags};
+                        response.end(JSON.stringify(responseObject));
                     });
                 } else {
                     Product.find({ _id: url.product_id }, function (err, product) {
